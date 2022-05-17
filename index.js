@@ -85,9 +85,8 @@ const { writeFile } = require("./util/generate-markdown");
 
 //   ]);
 // };
-const questions = () => {
-    
-    return inquirer
+const questions = [] 
+    inquirer
         .prompt([
             {
                 type: 'checkbox',
@@ -200,15 +199,15 @@ const questions = () => {
                   },
                 }
         ])
-        .then(badgeQData => {
-            readmeData.info.push(badgeQData);
-            if (badgeQData.info) {
-                return promptProject(readmeData);
-            } else {
-                return readmeData; 
-            }
-        }); 
-}
+        // .then(badgeQData => {
+        //     readmeData.info.push(badgeQData);
+        //     if (badgeQData.info) {
+        //         return promptProject(readmeData);
+        //     } else {
+        //         return readmeData; 
+        //     }
+        // }); 
+
 function init() {
     inquirer
       .prompt(questions)
