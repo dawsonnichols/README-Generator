@@ -1,228 +1,384 @@
-const inquirer = require('inquirer');
+const inquirer = require("inquirer");
 const generate = require("./src/page-template");
-const { writeFile } = require("./util/generate-markdown");
+const { writeFile } = require("./util/generateMarkdown");
+const fs = require("fs");
+
+
+inquirer
+  .prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "What is the title of your README?",
+      validate: (titleInput) => {
+        if (titleInput) {
+          return true;
+        } else {
+          console.log("Please enter title");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "description",
+      message: "What is the description of your README?",
+      validate: (descriptionInput) => {
+        if (descriptionInput) {
+          return true;
+        } else {
+          console.log("Please enter title");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "installation",
+      message: "What will the installation instructions be?",
+      validate: (installationInput) => {
+        if (installationInput) {
+          return true;
+        } else {
+          console.log("Please enter title");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "Usage",
+      message: "What will the usage information be?",
+      validate: (UsageInput) => {
+        if (UsageInput) {
+          return true;
+        } else {
+          console.log("Please enter title");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "contributors",
+      message: "Who are the contributors?",
+      validate: (contributorInput) => {
+        if (contributorInput) {
+          return true;
+        } else {
+          console.log("Please enter title");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "tests",
+      message: "What are the included tests or test methods?",
+      validate: (testInput) => {
+        if (testInput) {
+          return true;
+        } else {
+          console.log("Please enter title");
+          return false;
+        }
+      },
+    },
+    {
+      type: "checkbox",
+      name: "license",
+      message: "Which license did you use with this project?",
+      choices: [
+        "MIT",
+        "Apache 2.0",
+        "GPL 3.0",
+        "LGPL 2.1",
+        "BSD 3",
+        "Microsoft Public",
+      ],
+    },
+    {
+      type: "input",
+      name: "github",
+      message: "What is your Github username?",
+      validate: (usernameInput) => {
+        if (usernameInput) {
+          return true;
+        } else {
+          console.log("Please enter username!");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "Email",
+      message: "What is your Email address?",
+      validate: (emailInput) => {
+        if (emailInput) {
+          return true;
+        } else {
+          console.log("Please enter your email!");
+          return false;
+        }
+      },
+    }
+  ])
+  .then((answers) => {
+    console.log(answers);
+    fetch(`https://api.github.com/users/${answers.github}`)
+    .then(response => response.json)
+    .then( data => console.log(data))
+
+    const readmeFile = 
+    then(
+                      `Hello ${answers.title}
+                      ${answers.description}
+                      ${answers.installation}
+                      ${answers.usage} 
+                      ${answers.contributors}
+                      ${answers.tests}
+                      ${answers.license}
+                      ${answers.github}
+                      ${answers.Email}
+  `
+  )
+    fs.writeFile("readme.md", readmeFile, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("you did it");
+      }
+    });
+  });
 
 // const promptUser = () => {
 //   return inquirer.prompt([
-    // {
-    //   type: "input",
-    //   name: "title",
-    //   message: "What is the title of your README?",
-    //   validate: (titleInput) => {
-    //     if (titleInput) {
-    //       return true;
-    //     } else {
-    //       console.log("Please enter title");
-    //       return false;
-    //     }
-    //   },
-    // },
-    // {
-    //     type: "input",
-    //     name: "description",
-    //     message: "What is the description of your README?",
-    //     validate: (descriptionInput) => {
-    //       if (descriptionInput) {
-    //         return true;
-    //       } else {
-    //         console.log("Please enter title");
-    //         return false;
-    //       }
-    //     },
-    //   },
-    //   {
-    //     type: "input",
-    //     name: "Installation",
-    //     message: "What will the installation instructions be?",
-    //     validate: (installationInput) => {
-    //       if (installationInput) {
-    //         return true;
-    //       } else {
-    //         console.log("Please enter title");
-    //         return false;
-    //       }
-    //     },
-    //   },
-    //   {
-    //     type: "input",
-    //     name: "Usage",
-    //     message: "What will the usage information be?",
-    //     validate: (UsageInput) => {
-    //       if (UsageInput) {
-    //         return true;
-    //       } else {
-    //         console.log("Please enter title");
-    //         return false;
-    //       }
-    //     },
-    //   },
-    //   {
-    //     type: "input",
-    //     name: "Contributors",
-    //     message: "Who are the contributors?",
-    //     validate: (contributorInput) => {
-    //       if (contributorInput) {
-    //         return true;
-    //       } else {
-    //         console.log("Please enter title");
-    //         return false;
-    //       }
-    //     },
-    //   },
-    //   {
-    //     type: "input",
-    //     name: "Tests",
-    //     message: "What are the included tests or test methods?",
-    //     validate: (testInput) => {
-    //       if (testInput) {
-    //         return true;
-    //       } else {
-    //         console.log("Please enter title");
-    //         return false;
-    //       }
-    //     },
-    //   },
+// {
+//   type: "input",
+//   name: "title",
+//   message: "What is the title of your README?",
+//   validate: (titleInput) => {
+//     if (titleInput) {
+//       return true;
+//     } else {
+//       console.log("Please enter title");
+//       return false;
+//     }
+//   },
+// },
+// {
+//     type: "input",
+//     name: "description",
+//     message: "What is the description of your README?",
+//     validate: (descriptionInput) => {
+//       if (descriptionInput) {
+//         return true;
+//       } else {
+//         console.log("Please enter title");
+//         return false;
+//       }
+//     },
+//   },
+//   {
+//     type: "input",
+//     name: "Installation",
+//     message: "What will the installation instructions be?",
+//     validate: (installationInput) => {
+//       if (installationInput) {
+//         return true;
+//       } else {
+//         console.log("Please enter title");
+//         return false;
+//       }
+//     },
+//   },
+//   {
+//     type: "input",
+//     name: "Usage",
+//     message: "What will the usage information be?",
+//     validate: (UsageInput) => {
+//       if (UsageInput) {
+//         return true;
+//       } else {
+//         console.log("Please enter title");
+//         return false;
+//       }
+//     },
+//   },
+//   {
+//     type: "input",
+//     name: "Contributors",
+//     message: "Who are the contributors?",
+//     validate: (contributorInput) => {
+//       if (contributorInput) {
+//         return true;
+//       } else {
+//         console.log("Please enter title");
+//         return false;
+//       }
+//     },
+//   },
+//   {
+//     type: "input",
+//     name: "Tests",
+//     message: "What are the included tests or test methods?",
+//     validate: (testInput) => {
+//       if (testInput) {
+//         return true;
+//       } else {
+//         console.log("Please enter title");
+//         return false;
+//       }
+//     },
+//   },
 
 //   ]);
 // };
-const questions = [] 
-    inquirer
-        .prompt([
-            {
-                type: 'checkbox',
-                name: 'license',
-                message: 'Which license did you use with this project?',
-                choices: ['MIT', 'Apache 2.0', 'GPL 3.0', 'LGPL 2.1', 'BSD 3', 'Microsoft Public' ]
-              },
-              {
-                type: "input",
-                name: "Github Username",
-                message: "What is your Github username?",
-                validate: (usernameInput) => {
-                  if (usernameInput) {
-                    return true;
-                  } else {
-                    console.log("Please enter username!");
-                    return false;
-                  }
-                },
-              },
-              {
-                type: "input",
-                name: "Email",
-                message: "What is your Email address?",
-                validate: (emailInput) => {
-                  if (emailInput) {
-                    return true;
-                  } else {
-                    console.log("Please enter your email!");
-                    return false;
-                  }
-                },
-              },
-              {
-                type: "input",
-                name: "title",
-                message: "What is the title of your README?",
-                validate: (titleInput) => {
-                  if (titleInput) {
-                    return true;
-                  } else {
-                    console.log("Please enter title");
-                    return false;
-                  }
-                },
-              },
-              {
-                  type: "input",
-                  name: "description",
-                  message: "What is the description of your README?",
-                  validate: (descriptionInput) => {
-                    if (descriptionInput) {
-                      return true;
-                    } else {
-                      console.log("Please enter title");
-                      return false;
-                    }
-                  },
-                },
-                {
-                  type: "input",
-                  name: "Installation",
-                  message: "What will the installation instructions be?",
-                  validate: (installationInput) => {
-                    if (installationInput) {
-                      return true;
-                    } else {
-                      console.log("Please enter title");
-                      return false;
-                    }
-                  },
-                },
-                {
-                  type: "input",
-                  name: "Usage",
-                  message: "What will the usage information be?",
-                  validate: (UsageInput) => {
-                    if (UsageInput) {
-                      return true;
-                    } else {
-                      console.log("Please enter title");
-                      return false;
-                    }
-                  },
-                },
-                {
-                  type: "input",
-                  name: "Contributors",
-                  message: "Who are the contributors?",
-                  validate: (contributorInput) => {
-                    if (contributorInput) {
-                      return true;
-                    } else {
-                      console.log("Please enter title");
-                      return false;
-                    }
-                  },
-                },
-                {
-                  type: "input",
-                  name: "Tests",
-                  message: "What are the included tests or test methods?",
-                  validate: (testInput) => {
-                    if (testInput) {
-                      return true;
-                    } else {
-                      console.log("Please enter title");
-                      return false;
-                    }
-                  },
-                }
-        ])
-        // .then(badgeQData => {
-        //     readmeData.info.push(badgeQData);
-        //     if (badgeQData.info) {
-        //         return promptProject(readmeData);
-        //     } else {
-        //         return readmeData; 
-        //     }
-        // }); 
+// const questions =
+//   inquirer.prompt(
+//     [
+//       {
+//           type: 'checkbox',
+//           name: 'license',
+//           message: 'Which license did you use with this project?',
+//           choices: ['MIT', 'Apache 2.0', 'GPL 3.0', 'LGPL 2.1', 'BSD 3', 'Microsoft Public' ]
+//         },
+//         {
+//           type: "input",
+//           name: "Github Username",
+//           message: "What is your Github username?",
+//           validate: (usernameInput) => {
+//             if (usernameInput) {
+//               return true;
+//             } else {
+//               console.log("Please enter username!");
+//               return false;
+//             }
+//           },
+//         },
+//         {
+//           type: "input",
+//           name: "Email",
+//           message: "What is your Email address?",
+//           validate: (emailInput) => {
+//             if (emailInput) {
+//               return true;
+//             } else {
+//               console.log("Please enter your email!");
+//               return false;
+//             }
+//           },
+//         },
+//         {
+//           type: "input",
+//           name: "title",
+//           message: "What is the title of your README?",
+//           validate: (titleInput) => {
+//             if (titleInput) {
+//               return true;
+//             } else {
+//               console.log("Please enter title");
+//               return false;
+//             }
+//           },
+//         },
+//         {
+//             type: "input",
+//             name: "description",
+//             message: "What is the description of your README?",
+//             validate: (descriptionInput) => {
+//               if (descriptionInput) {
+//                 return true;
+//               } else {
+//                 console.log("Please enter title");
+//                 return false;
+//               }
+//             },
+//           },
+//           {
+//             type: "input",
+//             name: "Installation",
+//             message: "What will the installation instructions be?",
+//             validate: (installationInput) => {
+//               if (installationInput) {
+//                 return true;
+//               } else {
+//                 console.log("Please enter title");
+//                 return false;
+//               }
+//             },
+//           },
+//           {
+//             type: "input",
+//             name: "Usage",
+//             message: "What will the usage information be?",
+//             validate: (UsageInput) => {
+//               if (UsageInput) {
+//                 return true;
+//               } else {
+//                 console.log("Please enter title");
+//                 return false;
+//               }
+//             },
+//           },
+//           {
+//             type: "input",
+//             name: "Contributors",
+//             message: "Who are the contributors?",
+//             validate: (contributorInput) => {
+//               if (contributorInput) {
+//                 return true;
+//               } else {
+//                 console.log("Please enter title");
+//                 return false;
+//               }
+//             },
+//           },
+//           {
+//             type: "input",
+//             name: "Tests",
+//             message: "What are the included tests or test methods?",
+//             validate: (testInput) => {
+//               if (testInput) {
+//                 return true;
+//               } else {
+//                 console.log("Please enter title");
+//                 return false;
+//               }
+//             },
+//           }
+//   ]
+//   )
 
-function init() {
-    inquirer
-      .prompt(questions)
-      .then((readmeData) => generateMarkdown(readmeData))
-      .then((readmeText) => writeReadme(readmeText))
-      .then((writeReadmeResponse) => console.log(writeReadmeResponse))
-      .catch((err) => console.log(err));
-  }
-  
-  // Function call to initialize app
-  init();
+//         .then(projectData => {
+//             readmeData.push(projectData);
+//             if (projectData.tests) {
+//                 return promptProject(readmeData);
+//               } else {
+//                 return readmeData;
+//               }
+//             });
+//         // .then(badgeQData => {
+//         //     readmeData.info.push(badgeQData);
+//         //     if (badgeQData.info) {
+//         //         return promptProject(readmeData);
+//         //     } else {
+//         //         return readmeData;
+//         //     }
+//         // });
 
+// function init() {
+//     inquirer
+//       .prompt(questions)
+//       .then((readmeData) => generateMarkdown(readmeData))
+//       .then((readmeText) => writeReadme(readmeText))
+//       .then((writeReadmeResponse) => console.log(writeReadmeResponse))
+//       .catch((err) => console.log(err));
+//   }
 
-
-
+//   // Function call to initialize app
+//   init();
 
 // promptUser()
 //     .then(promptProject)
@@ -230,7 +386,7 @@ function init() {
 //         return generate(readmeData);
 //     })
 //     .then(readmePage => {
-//         return writeFile(readmePage); 
+//         return writeFile(readmePage);
 //     })
 // GIVEN a command-line application that accepts user input
 // WHEN I am prompted for information about my application repository
