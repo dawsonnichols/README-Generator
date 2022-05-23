@@ -1,8 +1,8 @@
 const inquirer = require("inquirer");
-const generate = require("./src/page-template");
-const { writeFile } = require("./util/generateMarkdown");
+// const generate = require("./src/page-template");
+// const { writeFile } = require("./util/generateMarkdown");
 const fs = require("fs");
-
+const fetch = require("node-fetch"); 
 
 inquirer
   .prompt([
@@ -47,7 +47,7 @@ inquirer
     },
     {
       type: "input",
-      name: "Usage",
+      name: "usage",
       message: "What will the usage information be?",
       validate: (UsageInput) => {
         if (UsageInput) {
@@ -85,16 +85,16 @@ inquirer
       },
     },
     {
-      type: "checkbox",
+      type: "list",
       name: "license",
       message: "Which license did you use with this project?",
       choices: [
         "MIT",
-        "Apache 2.0",
-        "GPL 3.0",
-        "LGPL 2.1",
-        "BSD 3",
-        "Microsoft Public",
+        "Apache",
+        "GPL",
+        "LGPL",
+        "BSD",
+        "Microsoft",
       ],
     },
     {
@@ -127,279 +127,51 @@ inquirer
   .then((answers) => {
     console.log(answers);
     fetch(`https://api.github.com/users/${answers.github}`)
-    .then(response => response.json)
-    .then( data => console.log(data))
+    .then( data => {
+      console.log(data)
+      return data.json(); 
+    })
+    
+    
 
-    const readmeFile = 
-    then(
-                      `Hello ${answers.title}
-                      ${answers.description}
-                      ${answers.installation}
-                      ${answers.usage} 
-                      ${answers.contributors}
-                      ${answers.tests}
-                      ${answers.license}
-                      ${answers.github}
-                      ${answers.Email}
-  `
-  )
-    fs.writeFile("readme.md", readmeFile, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("you did it");
-      }
-    });
-  });
+    
+    .then( (githubResponse) => {
+      let readmeFile = 
+      ` ![badge](https://img.shields.io/badge/license-${answers.license}-orange.svg)
+      # ${answers.title} 
+      # Table of Contents
+      1. [description](#description)
+      2. [Installation](#installation) 
+      3. [Usage](#usage)
+      4. [Contributors](#contributors)
+      5. [Tests](#tests)
+      6. [Github](#github)
+      7. [Email](#email)
+      
+      
+      ## Description 
+      ${answers.description}
+      ### Installation
+      ${answers.installation}
+      ### Usage
+      ${answers.usage} 
+      ### Contributors
+      ${answers.contributors}
+      ### Tests
+      ${answers.tests}
+      ### Github
+      ${githubResponse.html_url} 
+      ### Email 
+      ${answers.Email}
+`
 
-// const promptUser = () => {
-//   return inquirer.prompt([
-// {
-//   type: "input",
-//   name: "title",
-//   message: "What is the title of your README?",
-//   validate: (titleInput) => {
-//     if (titleInput) {
-//       return true;
-//     } else {
-//       console.log("Please enter title");
-//       return false;
-//     }
-//   },
-// },
-// {
-//     type: "input",
-//     name: "description",
-//     message: "What is the description of your README?",
-//     validate: (descriptionInput) => {
-//       if (descriptionInput) {
-//         return true;
-//       } else {
-//         console.log("Please enter title");
-//         return false;
-//       }
-//     },
-//   },
-//   {
-//     type: "input",
-//     name: "Installation",
-//     message: "What will the installation instructions be?",
-//     validate: (installationInput) => {
-//       if (installationInput) {
-//         return true;
-//       } else {
-//         console.log("Please enter title");
-//         return false;
-//       }
-//     },
-//   },
-//   {
-//     type: "input",
-//     name: "Usage",
-//     message: "What will the usage information be?",
-//     validate: (UsageInput) => {
-//       if (UsageInput) {
-//         return true;
-//       } else {
-//         console.log("Please enter title");
-//         return false;
-//       }
-//     },
-//   },
-//   {
-//     type: "input",
-//     name: "Contributors",
-//     message: "Who are the contributors?",
-//     validate: (contributorInput) => {
-//       if (contributorInput) {
-//         return true;
-//       } else {
-//         console.log("Please enter title");
-//         return false;
-//       }
-//     },
-//   },
-//   {
-//     type: "input",
-//     name: "Tests",
-//     message: "What are the included tests or test methods?",
-//     validate: (testInput) => {
-//       if (testInput) {
-//         return true;
-//       } else {
-//         console.log("Please enter title");
-//         return false;
-//       }
-//     },
-//   },
+fs.writeFile("./dist/readme.md", readmeFile, (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("you did it");
+  }
+});
+    }) 
+});
 
-//   ]);
-// };
-// const questions =
-//   inquirer.prompt(
-//     [
-//       {
-//           type: 'checkbox',
-//           name: 'license',
-//           message: 'Which license did you use with this project?',
-//           choices: ['MIT', 'Apache 2.0', 'GPL 3.0', 'LGPL 2.1', 'BSD 3', 'Microsoft Public' ]
-//         },
-//         {
-//           type: "input",
-//           name: "Github Username",
-//           message: "What is your Github username?",
-//           validate: (usernameInput) => {
-//             if (usernameInput) {
-//               return true;
-//             } else {
-//               console.log("Please enter username!");
-//               return false;
-//             }
-//           },
-//         },
-//         {
-//           type: "input",
-//           name: "Email",
-//           message: "What is your Email address?",
-//           validate: (emailInput) => {
-//             if (emailInput) {
-//               return true;
-//             } else {
-//               console.log("Please enter your email!");
-//               return false;
-//             }
-//           },
-//         },
-//         {
-//           type: "input",
-//           name: "title",
-//           message: "What is the title of your README?",
-//           validate: (titleInput) => {
-//             if (titleInput) {
-//               return true;
-//             } else {
-//               console.log("Please enter title");
-//               return false;
-//             }
-//           },
-//         },
-//         {
-//             type: "input",
-//             name: "description",
-//             message: "What is the description of your README?",
-//             validate: (descriptionInput) => {
-//               if (descriptionInput) {
-//                 return true;
-//               } else {
-//                 console.log("Please enter title");
-//                 return false;
-//               }
-//             },
-//           },
-//           {
-//             type: "input",
-//             name: "Installation",
-//             message: "What will the installation instructions be?",
-//             validate: (installationInput) => {
-//               if (installationInput) {
-//                 return true;
-//               } else {
-//                 console.log("Please enter title");
-//                 return false;
-//               }
-//             },
-//           },
-//           {
-//             type: "input",
-//             name: "Usage",
-//             message: "What will the usage information be?",
-//             validate: (UsageInput) => {
-//               if (UsageInput) {
-//                 return true;
-//               } else {
-//                 console.log("Please enter title");
-//                 return false;
-//               }
-//             },
-//           },
-//           {
-//             type: "input",
-//             name: "Contributors",
-//             message: "Who are the contributors?",
-//             validate: (contributorInput) => {
-//               if (contributorInput) {
-//                 return true;
-//               } else {
-//                 console.log("Please enter title");
-//                 return false;
-//               }
-//             },
-//           },
-//           {
-//             type: "input",
-//             name: "Tests",
-//             message: "What are the included tests or test methods?",
-//             validate: (testInput) => {
-//               if (testInput) {
-//                 return true;
-//               } else {
-//                 console.log("Please enter title");
-//                 return false;
-//               }
-//             },
-//           }
-//   ]
-//   )
-
-//         .then(projectData => {
-//             readmeData.push(projectData);
-//             if (projectData.tests) {
-//                 return promptProject(readmeData);
-//               } else {
-//                 return readmeData;
-//               }
-//             });
-//         // .then(badgeQData => {
-//         //     readmeData.info.push(badgeQData);
-//         //     if (badgeQData.info) {
-//         //         return promptProject(readmeData);
-//         //     } else {
-//         //         return readmeData;
-//         //     }
-//         // });
-
-// function init() {
-//     inquirer
-//       .prompt(questions)
-//       .then((readmeData) => generateMarkdown(readmeData))
-//       .then((readmeText) => writeReadme(readmeText))
-//       .then((writeReadmeResponse) => console.log(writeReadmeResponse))
-//       .catch((err) => console.log(err));
-//   }
-
-//   // Function call to initialize app
-//   init();
-
-// promptUser()
-//     .then(promptProject)
-//     .then(readmeData => {
-//         return generate(readmeData);
-//     })
-//     .then(readmePage => {
-//         return writeFile(readmePage);
-//     })
-// GIVEN a command-line application that accepts user input
-// WHEN I am prompted for information about my application repository
-// THEN a high-quality, professional README.md is generated with the title of my project and sections entitled Description, Table of Contents, Installation, Usage, License, Contributing, Tests, and Questions
-// WHEN I enter my project title
-// THEN this is displayed as the title of the README
-// WHEN I enter a description, installation instructions, usage information, contribution guidelines, and test instructions
-// THEN this information is added to the sections of the README entitled Description, Installation, Usage, Contributing, and Tests
-// WHEN I choose a license for my application from a list of options
-// THEN a badge for that license is added near the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
-// WHEN I enter my GitHub username
-// THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
-// WHEN I enter my email address
-// THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
-// WHEN I click on the links in the Table of Contents
-// THEN I am taken to the corresponding section of the README
